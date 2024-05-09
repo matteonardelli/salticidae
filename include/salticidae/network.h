@@ -35,6 +35,11 @@
 #include <unordered_set>
 #include <shared_mutex>
 #include <openssl/rand.h>
+#include <iostream>
+
+
+
+
 namespace salticidae {
 /** Network of nodes who can send async messages.  */
 template<typename OpcodeType>
@@ -217,6 +222,11 @@ class MsgNetwork: public ConnPool {
                     SALTICIDAE_LOG_DEBUG("got message %s from %s",
                             std::string(msg).c_str(),
                             std::string(*conn).c_str());
+                    //SALTICIDAE_LOG_DEBUG("opcode = %s", std::string(msg.get_opcode()).c_str());
+                    SALTICIDAE_LOG_DEBUG("opcode = %s", get_hex(msg.get_opcode()).c_str());
+                    
+                    //std::cout << "msg.get_opcode() ===== " << std::string(msg.get_opcode()).c_str() << std::endl;
+
 #ifdef SALTICIDAE_MSG_STAT
                     conn->nrecv++;
                     conn->nrecvb += msg.get_length();
@@ -355,6 +365,14 @@ class PeerNetwork: public MsgNetwork<OpcodeType> {
         ADDR_BASED,
         CERT_BASED
     };
+
+    // Public field mapping PeerId to a list of integers
+    std::unordered_map<PeerId, std::vector<uint32_t >> peerIdToIntegersMap;
+
+    const std::unordered_map<PeerId, std::vector<uint32_t >>& get_known_peers() {
+        return peerIdToIntegersMap; //todo: ritorna un'altra cosa !
+    }
+
 
     private:
     struct Peer;
