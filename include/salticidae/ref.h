@@ -130,6 +130,7 @@ class BoxObj: public _BoxObj<T, D> {
 
     T *operator->() const { return base_t::obj; }
 
+    // FIXME: remove these variables from here.
     bool frost;
     unsigned char *aggr_signature;
 };
